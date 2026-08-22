@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>UI Online Typing Test</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<!-- ================= HEADER ================= -->
+
+<header class="top-header">
+
+    <div class="logo-area">
+
+        <div class="logo-circle">
+            UI
+        </div>
+
+        <div class="logo-text">
+            <span>UI</span> Online Typing Test
+        </div>
+
+    </div>
+
+
+    <nav class="navigation">
+
+        <a href="index.html" class="active">
+            Typing Test
+        </a>
+
+        <a href="practice.html">
+            Practice
+        </a>
+
+        <a href="games.html">
+            Typing Games
+        </a>
+
+        <a href="about.html">
+            About
+        </a>
+
+        <a href="login.html">
+            Login / Register
+        </a>
+
+        <button
+            class="menu-btn"
+            id="menu-btn">
+            ☰
+        </button>
+
+    </nav>
+
+</header>
+
+
+<!-- ================= MOBILE MENU ================= -->
+
+<div
+    class="mobile-menu"
+    id="mobile-menu">
+
+    <a href="index.html">
+        Typing Test
+    </a>
+
+    <a href="practice.html">
+        Practice
+    </a>
+
+    <a href="games.html">
+        Typing Games
+    </a>
+
+    <a href="about.html">
+        About
+    </a>
+
+    <a href="login.html">
+        Login / Register
+    </a>
+
+</div>
+
+
+<!-- ================= MAIN ================= -->
+
+<main class="main-container">
+
+
+    <!-- LOGIN NOTICE -->
+
+    <div class="login-notice">
+
+        <strong>Login</strong>
+
+        <span>or</span>
+
+        <strong>Register</strong>
+
+        <span>
+            to track your typing progress.
+        </span>
+
+    </div>
+
+
+    <!-- ================= TYPING TEST ================= -->
+
+    <section class="typing-test-section">
+
+
+        <div class="section-heading">
+
+            <h1>
+                Online Typing Test
+            </h1>
+
+            <p>
+                Test your typing speed and accuracy
+            </p>
+
+        </div>
+
+
+        <!-- ================= TIME SELECT ================= -->
+
+        <div class="time-selector">
+
+            <div class="time-title">
+                Select Test Time
+            </div>
+
+
+            <div class="time-options">
+
+                <button
+                    class="time-btn"
+                    data-time="30">
+                    30 Sec
+                </button>
+
+                <button
+                    class="time-btn selected"
+                    data-time="60">
+                    1 Min
+                </button>
+
+                <button
+                    class="time-btn"
+                    data-time="120">
+                    2 Min
+                </button>
+
+                <button
+                    class="time-btn"
+                    data-time="300">
+                    5 Min
+                </button>
+
+                <button
+                    class="time-btn"
+                    data-time="600">
+                    10 Min
+                </button>
+
+                <button
+                    class="time-btn"
+                    data-time="900">
+                    15 Min
+                </button>
+
+                <button
+                    class="time-btn"
+                    data-time="1800">
+                    30 Min
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================= TYPING CARD ================= -->
+
+        <div class="typing-card">
+
+
+            <!-- STATISTICS -->
+
+            <div class="statistics">
+
+
+                <div class="stat">
+
+                    <div class="stat-label">
+                        Time
+                    </div>
+
+                    <div
+                        class="stat-value"
+                        id="time">
+                        01:00
+                    </div>
+
+                </div>
+
+
+                <div class="stat">
+
+                    <div class="stat-label">
+                        Speed
+                    </div>
+
+                    <div
+                        class="stat-value"
+                        id="wpm">
+                        0
+                    </div>
+
+                    <div class="stat-small">
+                        WPM
+                    </div>
+
+                </div>
+
+
+                <div class="stat">
+
+                    <div class="stat-label">
+                        Accuracy
+                    </div>
+
+                    <div
+                        class="stat-value"
+                        id="accuracy">
+                        100%
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ================= TEXT ================= -->
+
+            <div class="typing-text-box">
+
+                <div id="typing-text"></div>
+
+            </div>
+
+
+            <!-- ================= INPUT ================= -->
+
+            <textarea
+                id="typing-input"
+                autocomplete="off"
+                spellcheck="false"
+                placeholder="Start typing here..."
+                disabled></textarea>
+
+
+            <!-- ================= BUTTONS ================= -->
+
+            <div class="typing-buttons">
+
+                <button
+                    id="reset-btn"
+                    class="reset-button">
+                    ↻ Reset
+                </button>
+
+                <button
+                    id="switch-btn"
+                    class="switch-button">
+                    ⇄ Switch Text
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================= RESULT ================= -->
+
+        <div
+            class="result-box"
+            id="result-box">
+
+            <h2>
+                Test Result
+            </h2>
+
+
+            <div class="result-grid">
+
+
+                <div>
+
+                    <span>
+                        Speed
+                    </span>
+
+                    <strong id="result-wpm">
+                        0 WPM
+                    </strong>
+
+                </div>
+
+
+                <div>
+
+                    <span>
+                        Accuracy
+                    </span>
+
+                    <strong id="result-accuracy">
+                        100%
+                    </strong>
+
+                </div>
+
+
+                <div>
+
+                    <span>
+                        Test Time
+                    </span>
+
+                    <strong id="result-time">
+                        01:00
+                    </strong>
+
+                </div>
+
+
+                <div>
+
+                    <span>
+                        Paragraphs
+                    </span>
+
+                    <strong id="result-paragraphs">
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+</main>
+
+
+<!-- ================= FOOTER ================= -->
+
+<footer class="footer">
+
+    <div>
+        <strong>
+            UI Online Typing Test
+        </strong>
+    </div>
+
+
+    <div>
+
+        Email:
+
+        <a href="mailto:ushainstitutepahasa@gmail.com">
+            ushainstitutepahasa@gmail.com
+        </a>
+
+    </div>
+
+
+    <div class="copyright">
+
+        © 2026 UI Online Typing Test.
+        All Rights Reserved.
+
+    </div>
+
+</footer>
+
+
+<script src="script.js"></script>
+
+</body>
+
+</html>
