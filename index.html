@@ -3,9 +3,9 @@
 
 <head>
     <script>
-    // Page load hone se turant pehle theme set karega taki flicker na ho
+    // Page load hone se turant pehle theme set karega taki flicker na ho (Default: Dark Mode)
     (function() {
-        const savedTheme = localStorage.getItem("theme") || "light";
+        const savedTheme = localStorage.getItem("theme") || "dark";
         document.documentElement.setAttribute("data-theme", savedTheme);
     })();
 </script>
@@ -37,7 +37,7 @@
 
 
     <nav class="navigation">
-        <button class="theme-toggle-btn" id="theme-toggle" title="Toggle Light/Dark Mode">🌙</button>
+        <button class="theme-toggle-btn" id="theme-toggle" title="Toggle Light/Dark Mode">☀️</button>
 
         <a href="index.html" class="active">
             Typing Test
