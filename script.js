@@ -1,6 +1,6 @@
 /* =====================================================
    UI ONLINE TYPING TEST
-   MAIN TYPING SCRIPT
+   MAIN TYPING SCRIPT (OPTIMIZED SPEED & SINGLE LINE SWITCH)
    ===================================================== */
 
 
@@ -136,13 +136,6 @@ let testStarted = false;
 let testFinished = false;
 
 
-/*
-   IMPORTANT:
-
-   These values NEVER reset when paragraph changes.
-   Therefore WPM and accuracy remain cumulative.
-*/
-
 let totalTypedCharacters = 0;
 
 let totalCorrectCharacters = 0;
@@ -183,12 +176,22 @@ function getRandomText() {
    DISPLAY NEW PARAGRAPH
    ===================================================== */
 
-function displayText() {
+function displayText(isSingleLine = false) {
 
     currentText =
         getRandomText();
 
     typingTextElement.innerHTML = "";
+
+    // Agar single line mode enable karna ho toh container style update karein
+    if (isSingleLine) {
+        typingTextElement.style.whiteSpace = "nowrap";
+        typingTextElement.style.overflowX = "auto";
+        typingTextElement.style.display = "block";
+    } else {
+        typingTextElement.style.whiteSpace = "normal";
+        typingTextElement.style.overflowX = "visible";
+    }
 
     for (
         let i = 0;
@@ -296,7 +299,7 @@ function resetTest() {
 
     resultBox.classList.remove("show");
 
-    displayText();
+    displayText(false); // Normal display
 
     typingInput.focus();
 
@@ -482,33 +485,16 @@ function updateCharacterColors() {
 
 
 /* =====================================================
-   CALCULATE WPM + ACCURACY
+   CALCULATE WPM + ACCURACY (MORE STRICT & REALISTIC)
    ===================================================== */
 
 function calculateResult() {
 
-    /*
-       Current paragraph typed characters
-    */
-
     const typedText =
         typingInput.value;
 
-
-    /*
-       Current paragraph correct/wrong
-    */
-
     const current =
         calculateCurrentTyping();
-
-
-    /*
-       CUMULATIVE TOTAL
-
-       Completed paragraph data
-       + current paragraph data
-    */
 
     const totalCorrect =
         totalCorrectCharacters +
@@ -530,20 +516,16 @@ function calculateResult() {
     let accuracy = 100;
 
     if (totalTyped > 0) {
-
-        accuracy =
-            (totalCorrect / totalTyped) *
-            100;
-
+        let effectiveCorrect = Math.max(0, totalCorrect - (totalWrong * 1.5));
+        accuracy = (effectiveCorrect / totalTyped) * 100;
     }
 
 
     /* ================================
-       WPM
+       WPM (Strict Net Calculation)
        ================================ */
 
     let wpm = 0;
-
 
     if (startTime) {
 
@@ -552,18 +534,18 @@ function calculateResult() {
             60000;
 
 
-        if (elapsedMinutes > 0) {
-
-            wpm =
-                (totalCorrect / 5) /
-                elapsedMinutes;
-
+        if (elapsedMinutes > 0.1) {
+            // Mistakes par heavy penalty taaki speed genuine lage
+            let netChars = totalCorrect - (totalWrong * 3); 
+            if (netChars < 0) netChars = 0;
+            
+            wpm = (netChars / 5) / elapsedMinutes;
         }
 
     }
 
 
-    if (!isFinite(wpm)) {
+    if (!isFinite(wpm) || wpm < 0) {
 
         wpm = 0;
 
@@ -574,12 +556,12 @@ function calculateResult() {
         Math.round(wpm);
 
     accuracyElement.textContent =
-        Math.round(accuracy) + "%";
+        Math.max(0, Math.round(accuracy)) + "%";
 
 
     return {
         wpm: Math.round(wpm),
-        accuracy: Math.round(accuracy),
+        accuracy: Math.max(0, Math.round(accuracy)),
         totalTyped: totalTyped,
         totalCorrect: totalCorrect,
         totalWrong: totalWrong
@@ -602,11 +584,6 @@ function completeParagraph() {
         calculateCurrentTyping();
 
 
-    /*
-       SAVE CURRENT PARAGRAPH
-       INTO CUMULATIVE TOTAL
-    */
-
     totalTypedCharacters +=
         typedText.length;
 
@@ -619,18 +596,11 @@ function completeParagraph() {
     completedParagraphs++;
 
 
-    /*
-       IMPORTANT:
-
-       DO NOT RESET TIMER
-       DO NOT RESET WPM
-       DO NOT RESET ACCURACY
-    */
-
-
     typingInput.value = "";
 
-    displayText();
+    // Check agar single line mode active tha toh usko maintain rakhein
+    const isSingleLineActive = typingTextElement.style.whiteSpace === "nowrap";
+    displayText(isSingleLineActive);
 
     updateCharacterColors();
 
@@ -654,10 +624,6 @@ typingInput.addEventListener(
         }
 
 
-        /*
-           First keystroke starts test
-        */
-
         if (!testStarted) {
 
             startTest();
@@ -669,10 +635,6 @@ typingInput.addEventListener(
 
         calculateResult();
 
-
-        /*
-           CHECK COMPLETE PARAGRAPH
-        */
 
         if (
             typingInput.value.length >=
@@ -700,11 +662,6 @@ function finishTest() {
     }
 
 
-    /*
-       Add current paragraph's
-       typed characters to totals
-    */
-
     const typedText =
         typingInput.value;
 
@@ -723,10 +680,6 @@ function finishTest() {
         current.wrong;
 
 
-    /*
-       Stop test
-    */
-
     testFinished = true;
 
     testStarted = false;
@@ -738,17 +691,9 @@ function finishTest() {
     typingInput.disabled = true;
 
 
-    /*
-       Final calculation
-    */
-
     const finalResult =
         calculateResult();
 
-
-    /*
-       Result box
-    */
 
     resultWpm.textContent =
         finalResult.wpm +
@@ -767,10 +712,6 @@ function finishTest() {
 
     resultBox.classList.add("show");
 
-
-    /*
-       Scroll to result
-    */
 
     setTimeout(function () {
 
@@ -794,11 +735,6 @@ timeButtons.forEach(
         button.addEventListener(
             "click",
             function () {
-
-                /*
-                   Don't change time
-                   during active test
-                */
 
                 if (testStarted) {
 
@@ -836,10 +772,6 @@ timeButtons.forEach(
                 updateTimeDisplay();
 
 
-                /*
-                   Clear previous result
-                */
-
                 resultBox.classList.remove(
                     "show"
                 );
@@ -866,18 +798,12 @@ resetButton.addEventListener(
 
 
 /* =====================================================
-   SWITCH TEXT
+   SWITCH TEXT (NOW FORCES TEXT INTO A SINGLE LINE)
    ===================================================== */
 
 switchButton.addEventListener(
     "click",
     function () {
-
-        /*
-           If test is active,
-           save current paragraph
-           before switching.
-        */
 
         if (
             testStarted &&
@@ -905,7 +831,8 @@ switchButton.addEventListener(
 
         typingInput.value = "";
 
-        displayText();
+        // Switch text click karne par naya text load hoga aur wo ek hi line (nowrap) mein aayega
+        displayText(true);
 
         updateCharacterColors();
 
@@ -971,7 +898,7 @@ if (mobileMenu) {
    INITIALIZE
    ===================================================== */
 
-displayText();
+displayText(false); // Default normal view
 
 timeLeft = timeLimit;
 
@@ -984,3 +911,35 @@ typingInput.value = "";
 wpmElement.textContent = "0";
 
 accuracyElement.textContent = "100%";
+
+
+// =====================================================
+// GLOBAL THEME SWITCHER
+// =====================================================
+
+document.addEventListener("DOMContentLoaded", function () {
+    const themeToggleButton = document.getElementById("theme-toggle");
+    
+    const savedTheme = localStorage.getItem("theme") || "light";
+    
+    document.documentElement.setAttribute("data-theme", savedTheme);
+    if (themeToggleButton) {
+        themeToggleButton.textContent = savedTheme === "dark" ? "☀️" : "🌙";
+    }
+
+    if (themeToggleButton) {
+        themeToggleButton.addEventListener("click", function () {
+            let currentTheme = document.documentElement.getAttribute("data-theme");
+            
+            if (currentTheme === "dark") {
+                document.documentElement.setAttribute("data-theme", "light");
+                localStorage.setItem("theme", "light");
+                themeToggleButton.textContent = "🌙";
+            } else {
+                document.documentElement.setAttribute("data-theme", "dark");
+                localStorage.setItem("theme", "dark");
+                themeToggleButton.textContent = "☀️";
+            }
+        });
+    }
+});
