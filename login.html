@@ -3,9 +3,9 @@
 
 <head>
     <script>
-    // Page load hone se turant pehle theme set karega taki flicker na ho
+    // Page load hone se turant pehle theme set karega taki flicker na ho (Default: Dark Mode)
     (function() {
-        const savedTheme = localStorage.getItem("theme") || "light";
+        const savedTheme = localStorage.getItem("theme") || "dark";
         document.documentElement.setAttribute("data-theme", savedTheme);
     })();
 </script>
