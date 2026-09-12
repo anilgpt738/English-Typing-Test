@@ -2,6 +2,13 @@
 <html lang="en">
 
 <head>
+    <script>
+    // Page load hone se turant pehle theme set karega taki flicker na ho
+    (function() {
+        const savedTheme = localStorage.getItem("theme") || "light";
+        document.documentElement.setAttribute("data-theme", savedTheme);
+    })();
+</script>
 
     <meta charset="UTF-8">
 
@@ -431,7 +438,6 @@
 
 
     <nav class="navigation">
-
 
         <a href="index.html">
             Typing Test
